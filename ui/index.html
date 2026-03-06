@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Height Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: transparent;
+            overflow: hidden;
+        }
+        
+        .container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 380px;
+            background: #0f0f0f;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        
+        .container.active {
+            display: block;
+        }
+        
+        .header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fafafa;
+        }
+        
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #a1a1aa;
+            cursor: pointer;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        
+        .close-btn:hover {
+            background: #27272a;
+            color: #fafafa;
+        }
+        
+        .content {
+            padding: 24px;
+        }
+        
+        .slider-container {
+            margin-bottom: 24px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .slider-label span {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fafafa;
+        }
+        
+        .height-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #22c55e;
+            background: #14532d;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #27272a;
+            border-radius: 4px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+            transition: box-shadow 0.15s;
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.3);
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #22c55e;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .preset-btn {
+            padding: 10px;
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            color: #fafafa;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .preset-btn:hover {
+            background: #27272a;
+            border-color: #3f3f46;
+        }
+        
+        .preset-btn.active {
+            background: #14532d;
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+        
+        .preview {
+            background: #18181b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 120px;
+            overflow: hidden;
+        }
+        
+        .preview-figure {
+            width: 40px;
+            background: linear-gradient(to top, #22c55e, #4ade80);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+        }
+        
+        .preview-label {
+            text-align: center;
+            font-size: 12px;
+            color: #71717a;
+            margin-top: 8px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: #22c55e;
+            color: #0f0f0f;
+        }
+        
+        .btn-primary:hover {
+            background: #16a34a;
+        }
+        
+        .btn-secondary {
+            background: #27272a;
+            color: #fafafa;
+        }
+        
+        .btn-secondary:hover {
+            background: #3f3f46;
+        }
+        
+        .min-max {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #71717a;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <div class="header">
+            <h1>Height Sync</h1>
+            <button class="close-btn" id="closeBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="content">
+            <div class="preview">
+                <div class="preview-figure" id="previewFigure" style="height: 80px;"></div>
+            </div>
+            <div class="preview-label">Preview</div>
+            
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>Height Scale</span>
+                    <span class="height-value" id="heightValue">1.00x</span>
+                </div>
+                <input type="range" class="slider" id="heightSlider" min="0.5" max="2.0" step="0.05" value="1.0">
+                <div class="min-max">
+                    <span id="minLabel">0.5x</span>
+                    <span id="maxLabel">2.0x</span>
+                </div>
+            </div>
+            
+            <div class="presets">
+                <button class="preset-btn" data-value="0.5">0.5x</button>
+                <button class="preset-btn" data-value="0.75">0.75x</button>
+                <button class="preset-btn active" data-value="1.0">1.0x</button>
+                <button class="preset-btn" data-value="1.25">1.25x</button>
+                <button class="preset-btn" data-value="1.5">1.5x</button>
+                <button class="preset-btn" data-value="1.75">1.75x</button>
+                <button class="preset-btn" data-value="2.0">2.0x</button>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                <button class="btn btn-primary" id="applyBtn">Apply</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const app = document.getElementById('app');
+        const heightSlider = document.getElementById('heightSlider');
+        const heightValue = document.getElementById('heightValue');
+        const previewFigure = document.getElementById('previewFigure');
+        const presetBtns = document.querySelectorAll('.preset-btn');
+        const closeBtn = document.getElementById('closeBtn');
+        const applyBtn = document.getElementById('applyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        let currentHeight = 1.0;
+        
+        // Update UI based on height value
+        function updateUI(height) {
+            currentHeight = height;
+            heightValue.textContent = height.toFixed(2) + 'x';
+            heightSlider.value = height;
+            
+            // Update preview (80px base * scale)
+            const previewHeight = 80 * height;
+            previewFigure.style.height = previewHeight + 'px';
+            
+            // Update preset buttons
+            presetBtns.forEach(btn => {
+                const btnValue = parseFloat(btn.dataset.value);
+                btn.classList.toggle('active', Math.abs(btnValue - height) < 0.01);
+            });
+        }
+        
+        // Listen for slider changes
+        heightSlider.addEventListener('input', (e) => {
+            updateUI(parseFloat(e.target.value));
+        });
+        
+        // Preset buttons
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                updateUI(parseFloat(btn.dataset.value));
+            });
+        });
+        
+        // Apply button
+        applyBtn.addEventListener('click', () => {
+            fetch('https://height-sync/setHeight', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ scale: currentHeight })
+            });
+            closeUI();
+        });
+        
+        // Reset button
+        resetBtn.addEventListener('click', () => {
+            updateUI(1.0);
+        });
+        
+        // Close button
+        closeBtn.addEventListener('click', closeUI);
+        
+        // Close UI
+        function closeUI() {
+            fetch('https://height-sync/close', { method: 'POST' });
+        }
+        
+        // Listen for NUI messages
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            if (data.type === 'open') {
+                app.classList.add('active');
+                updateUI(data.currentHeight);
+                document.getElementById('minLabel').textContent = data.minHeight + 'x';
+                document.getElementById('maxLabel').textContent = data.maxHeight + 'x';
+                heightSlider.min = data.minHeight;
+                heightSlider.max = data.maxHeight;
+            }
+        });
+        
+        // Escape key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeUI();
+            }
+        });
+    </script>
+</body>
+</html>
