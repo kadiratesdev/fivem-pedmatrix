@@ -1,7 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'Height Sync Team'
+name 'fivem-pedmatrix'
+author 'fivem-pedmatrix Team'
 description 'QBCore height synchronization resource with matrix-based scaling'
 version '1.0.0'
 

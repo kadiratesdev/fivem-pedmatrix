@@ -1,4 +1,4 @@
--- Client main module for height-sync
+-- Client main module for fivem-pedmatrix
 -- Core state, matrix apply, NUI callbacks
 
 LocalHeight = 1.0
@@ -77,7 +77,7 @@ function SetLocalHeight(scale)
     LocalHeight = scale
     
     -- Send to server
-    TriggerServerEvent('height-sync:setHeight', scale)
+    TriggerServerEvent('fivem-pedmatrix:setHeight', scale)
 end
 
 -- Get local player height
@@ -140,18 +140,18 @@ end)
 
 -- BUG-01 Fix: Trigger requestInit on QBCore player loaded
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    TriggerServerEvent('height-sync:requestInit')
+    TriggerServerEvent('fivem-pedmatrix:requestInit')
 end)
 
 -- Also handle resource restart mid-session
 AddEventHandler('onClientResourceStart', function(res)
     if res == GetCurrentResourceName() then
-        TriggerServerEvent('height-sync:requestInit')
+        TriggerServerEvent('fivem-pedmatrix:requestInit')
     end
 end)
 
 -- Handle receiving height from server
-RegisterNetEvent('height-sync:receiveHeight', function(serverId, scale)
+RegisterNetEvent('fivem-pedmatrix:receiveHeight', function(serverId, scale)
     if serverId == GetPlayerServerId(PlayerId()) then
         LocalHeight = scale
     end
@@ -181,4 +181,4 @@ AddEventHandler('QBCore:Client:OnPlayerUnload', function()
     LocalHeight = 1.0
 end)
 
-print('[height-sync] Client started')
+print('[fivem-pedmatrix] Client started')

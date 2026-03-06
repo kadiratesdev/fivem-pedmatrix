@@ -1,4 +1,4 @@
--- Client sync module for height-sync
+-- Client sync module for fivem-pedmatrix
 -- Broadcast loop, remote apply loop, event listeners
 
 RemoteHeights = {}  -- [serverId] = {scale = number, ped = number}
@@ -75,20 +75,20 @@ CreateThread(function()
         
         local scale = GetLocalHeight()
         if scale and scale ~= 1.0 then
-            TriggerServerEvent('height-sync:broadcast', scale)
+            TriggerServerEvent('fivem-pedmatrix:broadcast', scale)
         end
     end
 end)
 
 -- Handle bulk update (player join)
-RegisterNetEvent('height-sync:bulkUpdate', function(heights)
+RegisterNetEvent('fivem-pedmatrix:bulkUpdate', function(heights)
     for serverId, scale in pairs(heights) do
         RemoteHeights[serverId] = {scale = scale}
     end
 end)
 
 -- Handle player height update
-RegisterNetEvent('height-sync:playerUpdate', function(serverId, scale)
+RegisterNetEvent('fivem-pedmatrix:playerUpdate', function(serverId, scale)
     -- Self-filter: ignore own updates
     if serverId == GetPlayerServerId(PlayerId()) then return end
     
@@ -96,9 +96,9 @@ RegisterNetEvent('height-sync:playerUpdate', function(serverId, scale)
 end)
 
 -- Handle player left
-RegisterNetEvent('height-sync:playerLeft', function(serverId)
+RegisterNetEvent('fivem-pedmatrix:playerLeft', function(serverId)
     RemoteHeights[serverId] = nil
     PlayerPedCache[serverId] = nil
 end)
 
-print('[height-sync] Sync module started')
+print('[fivem-pedmatrix] Sync module started')

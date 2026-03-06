@@ -1,4 +1,4 @@
--- Client UI module for height-sync
+-- Client UI module for fivem-pedmatrix
 -- RegisterCommand, RegisterKeyMapping, NUI management
 
 -- Open height UI
@@ -31,4 +31,4 @@ end, false)
 -- Register key mapping (F2 by default)
 RegisterKeyMapping(Config.CommandName, 'Open Height Sync UI', 'keyboard', 'F2')
 
-print('[height-sync] UI module started')
+print('[fivem-pedmatrix] UI module started')

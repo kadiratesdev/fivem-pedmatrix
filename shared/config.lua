@@ -21,7 +21,7 @@ Config.RateLimitBroadcast = 500   -- Minimum time between broadcast calls
 
 -- UI settings
 Config.CommandName = 'height'     -- Chat command to open UI
-Config.KeyMappingName = 'height-sync:open'  -- Key mapping identifier
+Config.KeyMappingName = 'fivem-pedmatrix:open'  -- Key mapping identifier
 
 -- Security settings
 Config.RequireAdmin = false  -- Require admin permission to change height

@@ -6,7 +6,7 @@
 </p>
 
 <h1 align="center">
-  <img src="https://img.shields.io/badge/🔥%20qb--pedscale-22c55e?style=for-the-badge&logo=none" alt="qb-pedscale">
+  <img src="https://img.shields.io/badge/🔥%20fivem--pedmatrix-22c55e?style=for-the-badge&logo=none" alt="fivem-pedmatrix">
 </h1>
 
 <p align="center">
@@ -46,7 +46,7 @@
 ### 1. İndir
 ```bash
 cd resources
-git clone https://github.com/kadiratesdev/fivem-pedmatrix.git [qb]/qb-pedscale
+git clone https://github.com/kadiratesdev/fivem-pedmatrix.git [qb]/fivem-pedmatrix
 ```
 
 ### 2. Ayarla
@@ -59,7 +59,7 @@ dependency 'qb-core'
 ### 3. Başlat
 `server.cfg` dosyanıza ekleyin:
 ```cfg
-ensure qb-pedscale
+ensure fivem-pedmatrix
 ```
 
 ---
@@ -96,16 +96,16 @@ Config.RequireAdmin = false  -- Admin yetkisi gerektir
 ### Client Events
 ```lua
 -- Yükseklik değişikliği
-TriggerServerEvent('height-sync:setHeight', 1.5)
+TriggerServerEvent('fivem-pedmatrix:setHeight', 1.5)
 ```
 
 ### Server Exports
 ```lua
 -- Oyuncunun yüksekliğini ayarla
-exports['qb-pedscale']:SetPlayerHeight(serverId, scale)
+exports['fivem-pedscale']:SetPlayerHeight(serverId, scale)
 
 -- Oyuncunun yüksekliğini al
-local height = exports['qb-pedscale']:GetPlayerHeight(serverId)
+local height = exports['fivem-pedscale']:GetPlayerHeight(serverId)
 ```
 
 ---

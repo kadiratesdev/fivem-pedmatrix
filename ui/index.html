@@ -320,7 +320,7 @@
         
         // Apply button
         applyBtn.addEventListener('click', () => {
-            fetch('https://height-sync/setHeight', {
+            fetch('https://fivem-pedmatrix/setHeight', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ scale: currentHeight })
@@ -338,7 +338,7 @@
         
         // Close UI
         function closeUI() {
-            fetch('https://height-sync/close', { method: 'POST' });
+            fetch('https://fivem-pedmatrix/close', { method: 'POST' });
         }
         
         // Listen for NUI messages

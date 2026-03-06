@@ -1,4 +1,4 @@
--- Server main module for height-sync
+-- Server main module for fivem-pedmatrix
 -- Handles validation, in-memory store, and event relay
 
 local PlayerHeights = {}  -- In-memory store: [serverId] = scale
@@ -41,7 +41,7 @@ local function BroadcastToNearbyPlayers(serverId, scale, excludeClient)
                 local playerPos = GetEntityCoords(playerPed)
                 local dist = #(targetPos - playerPos)
                 if dist <= Config.SyncDistance then
-                    TriggerClientEvent('height-sync:playerUpdate', player, serverId, scale)
+                    TriggerClientEvent('fivem-pedmatrix:playerUpdate', player, serverId, scale)
                 end
             end
         end
@@ -81,7 +81,7 @@ local function CanBroadcast(source)
 end
 
 -- Handle player initial height request
-RegisterNetEvent('height-sync:requestInit', function()
+RegisterNetEvent('fivem-pedmatrix:requestInit', function()
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
@@ -91,21 +91,21 @@ RegisterNetEvent('height-sync:requestInit', function()
     
     -- Load from database if enabled
     if Config.SaveToDatabase then
-        scale = exports['height-sync']:LoadPlayerHeight(citizenid)
+        scale = exports['fivem-pedmatrix']:LoadPlayerHeight(citizenid)
     end
     
     -- Store in memory
     PlayerHeights[src] = scale
     
     -- Send bulk update to requesting client
-    TriggerClientEvent('height-sync:bulkUpdate', src, PlayerHeights)
+    TriggerClientEvent('fivem-pedmatrix:bulkUpdate', src, PlayerHeights)
     
     -- Send individual height to requesting client
-    TriggerClientEvent('height-sync:receiveHeight', src, src, scale)
+    TriggerClientEvent('fivem-pedmatrix:receiveHeight', src, src, scale)
 end)
 
 -- Handle height set from client
-RegisterNetEvent('height-sync:setHeight', function(scale)
+RegisterNetEvent('fivem-pedmatrix:setHeight', function(scale)
     local src = source
     
     -- Rate limiting
@@ -137,7 +137,7 @@ RegisterNetEvent('height-sync:setHeight', function(scale)
 end)
 
 -- Handle periodic broadcast from client (for drift correction)
-RegisterNetEvent('height-sync:broadcast', function(scale)
+RegisterNetEvent('fivem-pedmatrix:broadcast', function(scale)
     local src = source
     
     -- Rate limiting (BUG-04 fix)
@@ -154,9 +154,9 @@ RegisterNetEvent('height-sync:broadcast', function(scale)
 end)
 
 -- Handle map request
-RegisterNetEvent('height-sync:requestMap', function()
+RegisterNetEvent('fivem-pedmatrix:requestMap', function()
     local src = source
-    TriggerClientEvent('height-sync:bulkUpdate', src, PlayerHeights)
+    TriggerClientEvent('fivem-pedmatrix:bulkUpdate', src, PlayerHeights)
 end)
 
 -- Handle player drop
@@ -166,7 +166,7 @@ AddEventHandler('playerDropped', function(reason)
     LastUpdate[src] = nil
     
     -- Notify all nearby clients
-    TriggerClientEvent('height-sync:playerLeft', -1, src)
+    TriggerClientEvent('fivem-pedmatrix:playerLeft', -1, src)
 end)
 
 -- Exports for external resources with source validation
@@ -217,11 +217,11 @@ CreateThread(function()
         
         if Config.SaveToDatabase and next(PendingDBWrites) then
             for citizenid, scale in pairs(PendingDBWrites) do
-                exports['height-sync']:SavePlayerHeight(citizenid, scale)
+                exports['fivem-pedmatrix']:SavePlayerHeight(citizenid, scale)
             end
             PendingDBWrites = {}
         end
     end
 end)
 
-print('[height-sync] Server started')
+print('[fivem-pedmatrix] Server started')

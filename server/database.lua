@@ -1,4 +1,4 @@
--- Server database module for height-sync
+-- Server database module for fivem-pedmatrix
 -- Handles oxmysql CRUD operations
 
 local DatabaseReady = false
